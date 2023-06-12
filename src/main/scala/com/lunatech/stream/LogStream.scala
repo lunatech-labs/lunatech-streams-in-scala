@@ -10,7 +10,7 @@ import scala.io.Source
 
 /**
  * We want to create a lazy stream of logs, and restrict some operations from our stream.
- * Typically, any operation that requires to read the whole stream should be forbidden on our LogStream.
+ * Typically, any operation that requires to compute the whole stream elements should be forbidden on our LogStream.
  * @tparam A
  */
 trait LogStream[A] {
