@@ -13,14 +13,24 @@ import scala.io.Source
  * Typically, any operation that requires to compute the whole stream elements should be forbidden on our LogStream.
  * @tparam A
  */
-trait LogStream[A] {
+
+// create a sealed trait LogStream[A] with the following methods:
+sealed trait LogStream[A] {
   def take(n:Int):LogStream[A]
   def takeWhile(f: A => Boolean): LogStream[A]
   def map[B](f: A => B): LogStream[B]
   def ++(that: LogStream[A]): LogStream[A]
   def toLazyList: LazyList[A]
-  override def toString: String = toLazyList.toString();
-  def foreach(f: A => Unit): Unit = toLazyList.foreach(f)
+  def takeAndPrint(n:Int):LogStream[A] = {
+    val lazyList = take(n).toLazyList
+    lazyList.foreach(println)
+    this
+  }
+
+  override def toString: String = {
+    val lazyList = toLazyList
+    lazyList.toString()
+  }
 }
 
 
@@ -92,8 +102,8 @@ object LogStream {
   def streamLogsFiles(searchValue: String = "", files: List[String]): LogStream[String] =
     files.map {
       case (file) =>
-        val source = Source.fromFile(file) //, we can't close the source because we are using lazy list
-        val logStream = LogStream[String](source.getLines().to(LazyList)).map(it => s"-- $file ---> ${it}")
+        val source = Source.fromFile(file) //, we can't close the source because we are streaming the logs and don't know when the stream will end
+        val logStream = LogStream[String](source.getLines().to(LazyList)).map(it => s"--${it}")
         if (searchValue.nonEmpty) {
           logStream.takeWhile(_.contains(searchValue))
         }
