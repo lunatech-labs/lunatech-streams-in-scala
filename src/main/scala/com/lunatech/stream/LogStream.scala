@@ -18,18 +18,39 @@ import scala.io.Source
 sealed trait LogStream[A] {
   def take(n:Int):LogStream[A]
   def takeWhile(f: A => Boolean): LogStream[A]
+  def filter(f: A => Boolean): LogStream[A] = {
+    val lazyList = toLazyList.filter(f)
+    LogStream(lazyList)
+  }
+
   def map[B](f: A => B): LogStream[B]
   def ++(that: LogStream[A]): LogStream[A]
   def toLazyList: LazyList[A]
-  def takeAndPrint(n:Int):LogStream[A] = {
-    val lazyList = take(n).toLazyList
-    lazyList.foreach(println)
-    this
-  }
+
+  def compute(n:Int = 20): List[A] = toLazyList.take(n).toList
 
   override def toString: String = {
     val lazyList = toLazyList
-    lazyList.toString()
+    val pattern = """LazyList\((.*)\)""".r
+    val input = lazyList.toString()
+    input match {
+      case pattern(substring) =>
+        val elements = substring.split(",")
+        val someElements = if(elements.length > 100) elements.toList.takeWhile(_ != "<not computed>").take(100).mkString(",\n") else elements.toList.takeWhile(_ != "<not computed>").mkString(",\n")
+        val lastElement = elements.toList.last
+        val total  = if(elements.length> 100 ) {
+          val middleElements = if(elements.length - 100 > 1) s"${elements.length - 100} more elements..." else ""
+          s"$someElements,\n$middleElements,\n$lastElement"
+        } else {
+          elements.toList.mkString(",\n")
+        }
+        if(elements.length > 1){
+          s"LogStream(\n$total\n)"
+        } else s"LogStream($total)"
+
+      case _ => input
+    }
+
   }
 }
 
@@ -50,7 +71,7 @@ object LogStream {
       LogStream(lazyListTransform)
     }
     override def ++(that: LogStream[A]): LogStream[A] = {
-      val lazyList = values ++ that.takeWhile(_ => true).toLazyList
+      val lazyList = values ++ that.toLazyList
       LogStream(lazyList)
     }
     override def toLazyList: LazyList[A] = values
@@ -93,22 +114,26 @@ object LogStream {
     }
   }
 
+  def cleanOutput(output:String, filter:String = ""): String = {
+    val index = output.indexOf(filter)
+    val (left, right) = output.splitAt(index)
+    val response = (if (left.length > 6) s"${left.substring(0,6)}..." else "...") +filter+ (if (right.length > 6) s"${right.substring(0,6)}..." else "...")
+    response
+  }
+
   /**
    * Stream the logs from the given files
    * @param searchValue: search value, if empty then stream all the logs
-   * @param files: list of files from the resources folder
+   * @param files: list of files from the resources folde r
    * @return LogStream[String], which is a lazy list of logs
    */
-  def streamLogsFiles(searchValue: String = "", files: List[String]): LogStream[String] =
+  def streamLogsFiles(files: List[String]): LogStream[String] =
     files.map {
       case (file) =>
         val source = Source.fromFile(file) //, we can't close the source because we are streaming the logs and don't know when the stream will end
-        val logStream = LogStream[String](source.getLines().to(LazyList)).map(it => s"--${it}")
-        if (searchValue.nonEmpty) {
-          logStream.takeWhile(_.contains(searchValue))
-        }
-        else
-          logStream
-    }.foldLeft(LogStream.empty[String])((acc, it) => acc ++ it)
+       LogStream[String](source.getLines().to(LazyList)).map(it => s"${it}")
+    }.foldLeft(LogStream.empty[String])((acc, it) => {
+      acc ++ it
+    })
 
 }

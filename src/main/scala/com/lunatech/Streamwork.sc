@@ -34,6 +34,8 @@ result match {
   case scala.util.Failure(exception) => println("exception")
 }
 
+"PacketResponder".substring(0, 2)
+
 //  .sum
 //r.headOption
 //r.tail

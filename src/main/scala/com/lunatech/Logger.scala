@@ -18,10 +18,10 @@ object Logger extends App {
   val path = getClass.getResource("/logs").getPath.split("target")(1)
   private val relativePath = s"target$path"
   private val allLogsPaths = LogStream.readDirectories(relativePath, ".log")
-  private val logs = LogStream.streamLogsFiles("", allLogsPaths)
+  private val logs = LogStream.streamLogsFiles(allLogsPaths)
   var isReading = true
   while (isReading) {
-    println(s"logs: $logs")
+    println(s"logs: ${logs}")
     println("How do you want to read the logs? by specifying the number of lines or by specifying a filter? (l/f)")
     val inputLineOrFilter = StdIn.readLine()
     if (inputLineOrFilter == "l") {
@@ -40,10 +40,10 @@ object Logger extends App {
         if (polar == "y") {
           println("Please enter the filter")
           val filter = StdIn.readLine()
-          logs.takeWhile(_.contains(filter)).takeAndPrint(input)
+          logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute()
         }
         else {
-          logs.takeAndPrint(input)
+          logs.map(it=> LogStream.cleanOutput(it)).compute(input)
         }
       }
       isReading = false
@@ -65,10 +65,12 @@ object Logger extends App {
         if (isReading) {
           val input = inputToInt.get
           println(s"Good, you want to read $input lines")
-          logs.takeWhile(_.contains(filter)).toLazyList.head
+          logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute(input).foreach(println)
         }
       }
-      else println(logs.takeWhile(_.contains(filter)).toLazyList.toList)
+      else {
+        logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute()
+      }
       isReading = false
     }
     else {
@@ -77,6 +79,8 @@ object Logger extends App {
     isReading = true
 
   }
+
+
 //todo: see if there is a way to close the stream
 
 }
