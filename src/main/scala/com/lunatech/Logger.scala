@@ -18,8 +18,10 @@ object Logger extends App {
   val path = getClass.getResource("/logs").getPath.split("target")(1)
   private val relativePath = s"target$path"
   private val allLogsPaths = LogStream.readDirectories(relativePath, ".log")
-  private val logs = LogStream.streamLogsFiles(allLogsPaths)
+  private val logs = LogStream.streamLogsFiles(allLogsPaths)._2
+  private val sources = LogStream.streamLogsFiles(allLogsPaths)._1
   var isReading = true
+
   while (isReading) {
     println(s"logs: ${logs}")
     println("How do you want to read the logs? by specifying the number of lines or by specifying a filter? (l/f)")
@@ -40,15 +42,14 @@ object Logger extends App {
         if (polar == "y") {
           println("Please enter the filter")
           val filter = StdIn.readLine()
-          logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute()
+          logs.filter(_.contains(filter)).compute().foreach(println)
         }
         else {
-          logs.map(it=> LogStream.cleanOutput(it)).compute(input)
+          logs.compute(input).foreach(println)
         }
       }
       isReading = false
-    }
-    else if (inputLineOrFilter == "f") {
+    } else if (inputLineOrFilter == "f") {
       println("Please enter the filter")
       val filter = StdIn.readLine()
       println(s"Good, you want to read the lines that contain $filter")
@@ -65,11 +66,11 @@ object Logger extends App {
         if (isReading) {
           val input = inputToInt.get
           println(s"Good, you want to read $input lines")
-          logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute(input).foreach(println)
+          logs.filter(_.contains(filter)).compute(input).foreach(println)
         }
       }
       else {
-        logs.filter(_.contains(filter)).map(it=> LogStream.cleanOutput(it, filter)).compute()
+        logs.filter(_.contains(filter)).compute().foreach(println)
       }
       isReading = false
     }
@@ -79,8 +80,8 @@ object Logger extends App {
     isReading = true
 
   }
-
-
-//todo: see if there is a way to close the stream
+//  println("Bye bye")
+//  sources.foreach(_.close())
+//  println("sources closed")
 
 }

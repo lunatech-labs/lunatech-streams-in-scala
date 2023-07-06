@@ -1,5 +1,6 @@
 package com.lunatech.stream
 
+import java.awt.Color
 import scala.io.Source
 
 
@@ -114,12 +115,6 @@ object LogStream {
     }
   }
 
-  def cleanOutput(output:String, filter:String = ""): String = {
-    val index = output.indexOf(filter)
-    val (left, right) = output.splitAt(index)
-    val response = (if (left.length > 6) s"${left.substring(0,6)}..." else "...") +filter+ (if (right.length > 6) s"${right.substring(0,6)}..." else "...")
-    response
-  }
 
   /**
    * Stream the logs from the given files
@@ -127,13 +122,15 @@ object LogStream {
    * @param files: list of files from the resources folde r
    * @return LogStream[String], which is a lazy list of logs
    */
-  def streamLogsFiles(files: List[String]): LogStream[String] =
+  def streamLogsFiles(files: List[String]): (List[Source],LogStream[String]) =
     files.map {
       case (file) =>
         val source = Source.fromFile(file) //, we can't close the source because we are streaming the logs and don't know when the stream will end
-       LogStream[String](source.getLines().to(LazyList)).map(it => s"${it}")
-    }.foldLeft(LogStream.empty[String])((acc, it) => {
-      acc ++ it
+        (source,LogStream[String](source.getLines().to(LazyList)).map(it => s"${it}"))
+    }.foldLeft(List.empty[Source],LogStream.empty[String])((accTuple2, tuple2) => {
+      val (accSource, accLogStream) = accTuple2
+      val (source, logStream) = tuple2
+      (accSource ++ List(source), accLogStream ++ logStream)
     })
 
 }
