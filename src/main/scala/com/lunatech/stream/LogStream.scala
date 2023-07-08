@@ -118,9 +118,9 @@ object LogStream {
 
   /**
    * Stream the logs from the given files
-   * @param searchValue: search value, if empty then stream all the logs
-   * @param files: list of files from the resources folde r
-   * @return LogStream[String], which is a lazy list of logs
+   * @param files : list of files from the resources folder
+   * @return (List[Source],LogStream[String]), where List[Source] is the list of sources from the files and LogStream[String] is the stream of logs
+   *         We need to return the list of sources so that we can close the sources after the stream is finished
    */
   def streamLogsFiles(files: List[String]): (List[Source],LogStream[String]) =
     files.map {

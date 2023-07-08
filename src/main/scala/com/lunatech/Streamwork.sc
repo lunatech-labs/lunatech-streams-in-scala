@@ -36,6 +36,16 @@ result match {
 
 "PacketResponder".substring(0, 2)
 
+files.map {
+ case (file) =>
+ Source.fromFile(file).getLines().toList.filter(_.contains("Success")).take(10) //, we can't close the source because we are streaming the logs and don't know when the stream will end
+}
+
+files.map {
+ case (file) =>
+  Source.fromFile(file).getLines().to(LazyList).filter(_.contains("Success")).take(10) //, we can't close the source because we are streaming the logs and don't know when the stream will end
+}
+
 //  .sum
 //r.headOption
 //r.tail
