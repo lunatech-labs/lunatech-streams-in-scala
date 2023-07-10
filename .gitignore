@@ -2,3 +2,4 @@
 target/
 .idea/
 src/main/resources/logs
+/src/main/scala/com/lunatech/Streamwork.sc

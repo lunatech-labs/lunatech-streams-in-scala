@@ -24,7 +24,7 @@ class StreamManager {
 
 
 
-   def runScalaStreamLog = {
+   def runScalaStreamLog() = {
     val (logs, sources) = runLogStream
 
     var isReading = true
@@ -90,7 +90,7 @@ class StreamManager {
     sources.foreach(_.close())
   }
 
-   def runAkkaStreamLog = {
+   def runAkkaStreamLog() = {
     val akkaLogStream = new AkkaLogStream(relativePath)
     val logs = akkaLogStream.processLogFiles
     var isReading = true
@@ -155,17 +155,4 @@ class StreamManager {
   }
 
 
-  /**
-   *
-   * Challenges of building streaming applications
-   * Demand propagation: Managing the demand from downstream stages and propagating it correctly to upstream stages can be challenging. It requires understanding the flow of demand signals, handling various demand strategies (e.g., batching, aggregating), and ensuring appropriate buffering and error handling mechanisms are in place.
-   *
-   * Buffer sizing and tuning: Choosing the appropriate buffer sizes for stages and streams is crucial. It involves considering factors such as the rate of data production, the processing speed of consumers, and the available system resources. Finding the right balance is essential to avoid buffer overflows or excessive memory consumption.
-   *
-   * Error handling and recovery: Dealing with failures and errors in the consumer can be complex. When an error occurs, it is important to handle it gracefully, propagate it appropriately, and possibly implement recovery strategies. This might involve resuming the stream with default values, retrying failed elements, or logging and reporting errors for manual intervention.
-   *
-   * Resource management: Consumers may need to manage external resources, such as database connections or network connections, efficiently. Acquiring and releasing these resources in a timely manner while considering the backpressure dynamics can be challenging. It requires careful resource management strategies and using appropriate constructs like connection pools or resource pools.
-   *
-   * Integration with external systems: When consuming data from external systems, compatibility and integration challenges can arise. Ensuring proper serialization/deserialization, handling data format mismatches, dealing with rate limits or throttling mechanisms imposed by external systems, and managing the coordination between Akka Stream and external APIs can be complex.
-   */
 }
