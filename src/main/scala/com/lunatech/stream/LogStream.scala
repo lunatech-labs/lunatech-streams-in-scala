@@ -1,6 +1,5 @@
 package com.lunatech.stream
 
-import java.awt.Color
 import scala.io.Source
 
 

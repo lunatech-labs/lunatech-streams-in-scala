@@ -1,9 +1,8 @@
 package com.lunatech
 
-import com.lunatech.stream.{LogStream, StreamManager}
+import com.lunatech.stream.StreamManager
 
 import scala.io.StdIn
-import scala.util.Try
 
 
 /**
