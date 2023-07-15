@@ -8,6 +8,8 @@ The project is divided into two parts:
 1. LogStream: This is just an abstraction wrapping LazyList to resists the temptation to use LazyList methods that can cause memory leaks.
 <br>
 2. AkkaStream: Here we use Akka Stream to read the log files and print the lines to the console.
+<br>
+3. Fs2Stream: Here we use Fs2 Stream to read the log files and print the lines to the console.
 
 ### Setup the project
 This project makes use of log files to demonstrate the use of LazyList and Akka Stream. The log files are not included in the project,
