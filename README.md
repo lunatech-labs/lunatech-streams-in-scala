@@ -14,7 +14,7 @@ The project is divided into two parts:
 ### Setup the project
 This project makes use of log files to demonstrate the use of LazyList and Akka Stream. The log files are not included in the project,
 but can be downloaded from [here](https://zenodo.org/record/3227177). To run the project, you need to place the extracted log files in the following directory:
-src/main/resources/logs
+`src/main/resources/logs`
 
 
 ### How to run the application
@@ -42,11 +42,13 @@ The tests were run on a MacBook Pro (Retina, 13-inch, Early 2015) with 2.7 GHz D
 8. After running each stream type multiple times, the average time taken is calculated and recorded in the table below.
 
 <br>
+
 | Stream Type | Average Time Taken ( ms ) | Search String ( ERROR )   |
 |-------------|---------------------------|---------------------------|
 | LogStream   | 7158                      | ERROR                     |                         
 | Akka Stream | 4218                      | ERROR                     |
 | Fs2 Stream  | 6976                      | ERROR                     |
+
 <br>
 
 
