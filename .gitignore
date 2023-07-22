@@ -1,7 +1,6 @@
 /.bsp/
 target/
 .idea/
-src/main/resources/logs
 /src/main/scala/com/lunatech/Streamwork.sc
 /src/main/scala/com/lunatech/TestAkka.scala
 
