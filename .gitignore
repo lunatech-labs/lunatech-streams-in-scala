@@ -2,5 +2,12 @@
 target/
 .idea/
 /src/main/scala/com/lunatech/Streamwork.sc
-/src/main/scala/com/lunatech/TestAkka.scala
+/src/main/scala/com/lunatech/AkkaPlayGround.scala
+/src/main/scala/com/lunatech/ZStreamPlayGround.scala
+/src/main/scala/com/lunatech/Fs2PlayGround.scala
+/src/main/resources/.DS_Store
+/src/main/resources/logs/Thunderbird
+src/main/resources/logs/.DS_Store
+src/main/resources/.DS_Store
+**/.DS_Store
 

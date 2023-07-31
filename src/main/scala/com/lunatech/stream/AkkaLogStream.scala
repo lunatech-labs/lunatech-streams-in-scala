@@ -33,7 +33,7 @@ class AkkaLogStream(directory: String)(implicit system: ActorSystem) extends Com
 
   private def processLogFiles: Source[String, Any] = logFileSource
     .flatMapConcat(filePath => FileIO.fromPath(filePath))
-    .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = 1000, allowTruncation = true))
+    .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = 2000, allowTruncation = true))
     .map(_.utf8String)
     .recover {
       case e: Exception =>
@@ -55,7 +55,7 @@ class AkkaLogStream(directory: String)(implicit system: ActorSystem) extends Com
     println("Printing the logs from the akka stream")
     val startTime = System.currentTimeMillis()
     // when the akka stream is done, print the time taken
-    currentStream.unsafeRunSync().take(50).runForeach(println).onComplete(_ => {
+    currentStream.unsafeRunSync().take(100).runForeach(println).onComplete(_ => {
       val endTime = System.currentTimeMillis()
       println(s"Time taken to process the stream is ${endTime - startTime} ms")
     })

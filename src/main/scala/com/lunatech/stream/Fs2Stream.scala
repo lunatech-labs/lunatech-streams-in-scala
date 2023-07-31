@@ -15,13 +15,16 @@ class Fs2Stream(filePath: String ) extends CommonI {
   private def readLogFile(path: Path): fs2.Stream[IO, String] =
     Files[IO]
       .readAll(path)
-      .through(text.utf8Decode)
+      .through(text.utf8.decode)
       .through(text.lines)
 
   private def readLogFilesFromDirectory: fs2.Stream[IO, String] = {
-    Files[IO]
+   Files[IO]
       .walk(directory)
       .filter(_.extName.endsWith(".log"))
+//      .parEvalMap(15){ path =>
+//        IO{readLogFile(path)}
+//      }
       .flatMap(readLogFile)
    }
 
@@ -42,7 +45,7 @@ class Fs2Stream(filePath: String ) extends CommonI {
     val printStream = currentStream.unsafeRunSync()
 
     val printResult: IO[Unit] = printStream
-      .take(50)
+      .take(100)
       .evalMap(str => IO(println(str)))
       .compile
       .drain

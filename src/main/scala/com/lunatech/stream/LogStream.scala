@@ -27,7 +27,7 @@ class LogStream(path: String) extends CommonI {
     currentStream
   }
 
-  override def take(n: Int = 20): IO[Any] = {
+  override def take(n: Int = 50): IO[Any] = {
     currentStream = IO(processLogStream._1.take(n))
     currentStream
   }
@@ -35,7 +35,7 @@ class LogStream(path: String) extends CommonI {
   override def print(): IO[Unit] = IO{
     // track the time taken to process the stream
     val startTime = System.currentTimeMillis()
-    currentStream.unsafeRunSync().take(50).foreach(println)
+    currentStream.unsafeRunSync().take(100).foreach(println)
     val endTime = System.currentTimeMillis()
     println(s"Time taken to process the stream is ${endTime - startTime} ms")
   }
