@@ -1,5 +1,5 @@
 # Streams in Scala
-This is a sample project that accompanies the blog post [Streams in Scala](https://blog.lunatech.com/streams-in-scala/).
+This is a sample project that accompanies the blog post [Streams in Scala](https://blog.lunatech.com/posts/2023-07-28-streams-in-scala--an-introductory-guide).
 
 <br/>
 A simple application that reads log files and prints the lines to the console using scala LazyList (LogStream), Akka Stream and Fs2 Stream.
