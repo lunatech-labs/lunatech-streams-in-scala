@@ -7,7 +7,6 @@ target/
 /src/main/scala/com/lunatech/Fs2PlayGround.scala
 /src/main/resources/.DS_Store
 /src/main/resources/logs/Thunderbird
-src/main/resources/logs/.DS_Store
-src/main/resources/.DS_Store
+/src/main/resources/logs/.DS_Store
 **/.DS_Store
 
